@@ -1,0 +1,65 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:SistemaPreventa"
+             x:Class="SistemaPreventa.ProductosPage"
+             Title="Listado de Productos">
+
+    <ContentPage.Content>
+        <ScrollView>
+        <StackLayout>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+
+                    <Entry x:Name="insumoEntry"
+                   Placeholder="Buscar por descripcion o codigo"
+                   Completed="insumoEntry_Completed" 
+                   Grid.Row="0" ClearButtonVisibility="WhileEditing">
+                       
+                    </Entry> 
+                <Picker x:Name="pckCategoriasInsumos" Grid.Row="1"  Title="Seleccione categoria" SelectedIndexChanged="pckCategoriasInsumos_SelectedIndexChanged" >
+                    <Picker.ItemDisplayBinding >
+                        <Binding Path="nombre" />
+                    </Picker.ItemDisplayBinding>
+                </Picker>
+                    <ActivityIndicator x:Name="activityIndicator" IsRunning="False" Color="Blue" Grid.Row="0" />
+                <Label x:Name="lblClienteenCurso" FontSize="18" FontAttributes="Bold" TextColor="White" BackgroundColor="Orange" HorizontalOptions="CenterAndExpand"  Grid.Row="2">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer x:Name="tpClienteenCurso" Tapped="tpClienteenCurso_Tapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <ListView x:Name="productosListView"
+                          ItemsSource="{Binding Productos}"
+                          Grid.Row="3"                      
+                          SeparatorVisibility="Default"
+                          ItemTapped="productosListView_ItemTapped" HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid Padding="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="{Binding codigo}" FontSize="14" Padding="5" Grid.Column="0" FontAttributes="Bold"/>
+                                    <Label Text="{Binding descripcion}" FontSize="14" Padding="5" Grid.Column="1" />
+                                    <Label Text="{Binding precioVenta, StringFormat='{}{0:C}'}" Padding="5" FontSize="14" Grid.Column="2" TextColor="Red"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mauiPopup:BasePopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mauiPopup="clr-namespace:MauiPopup.Views;assembly=MauiPopup"
+             x:Class="SistemaPreventa.ClienteABMPop"
+             Title="ClienteABMPop">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="ABM Clientes"/>
+            <Entry x:Name="entryNomApellRazon" Placeholder="Nombre/Apellido/Razón" />
+            <Entry x:Name="entryDirDomicilio" Placeholder="Dirección/Domicilio" />
+            <Entry x:Name="entryCuit" Placeholder="CUIT" />
+            <Entry x:Name="entryTelefono" Placeholder="Teléfono" />
+            <Entry x:Name="entryContacto" Placeholder="Contacto" />
+            <Entry x:Name="entryCelular" Placeholder="Celular" />
+            <Entry x:Name="entryEmail" Placeholder="Email" />
+            <Entry x:Name="entryObservaciones" Placeholder="Observaciones" />
+            <Entry x:Name="entryListaPrecios" Placeholder="Lista de Precios" />
+            <Entry x:Name="entryCodClie" Placeholder="Código de Cliente" />
+            <Entry x:Name="entryVendedor" Placeholder="Vendedor" />
+            <Entry x:Name="entryLocalidadTexto" Placeholder="Localidad" />
+            <Entry x:Name="entryTipoContr" Placeholder="Tipo de Contrato" />
+
+            <Button Text="Guardar" x:Name="btnGuardar" Clicked="btnGuardar_Clicked" />
+            <Button Text="Cancelar" x:Name="btnCancelar" Clicked="btnCancelar_Clicked" />
+        </StackLayout>
+    </ContentPage.Content>
+</mauiPopup:BasePopupPage>

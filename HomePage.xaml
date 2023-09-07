@@ -1,0 +1,28 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="SistemaPreventa.HomePage"
+             Title="Inicio Preventista">
+
+    <StackLayout Padding="20">
+        <Image x:Name="imgLogo" Aspect="AspectFit" HeightRequest="200" HorizontalOptions="CenterAndExpand" />
+        <Label x:Name="lblNombreFantasia" FontSize="18" HorizontalOptions="CenterAndExpand" />
+        <Label x:Name="lblRazonSocial" FontSize="18" HorizontalOptions="CenterAndExpand" />
+        <Label x:Name="lblDireccion" FontSize="18" HorizontalOptions="CenterAndExpand" />
+        <Label x:Name="lblLocalidad" FontSize="18" HorizontalOptions="CenterAndExpand" />
+        <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,10,0,10" />
+        <Label x:Name="lblDatosVendedor" FontSize="18" HorizontalOptions="Start" Text="Seleccione un vendedor/zona para trabajar" />
+        <Picker x:Name="pckListaVendedores" Title="Seleccione el vendedor a usar para los pedidos" 
+                SelectedIndexChanged="pckListaVendedores_SelectedIndexChanged">
+            <Picker.ItemDisplayBinding >
+                <Binding Path="nombre" />
+            </Picker.ItemDisplayBinding>
+        </Picker>
+        <BoxView HeightRequest="1" BackgroundColor="Gray" Margin="0,10,0,10" />
+        <Label x:Name="lblPedidosPendientes" Text="Pedidos pendientes de envio: " HorizontalOptions="Start" FontSize="18"/>
+
+
+    </StackLayout>
+</ContentPage>

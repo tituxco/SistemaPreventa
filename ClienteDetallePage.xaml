@@ -1,0 +1,98 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:SistemaPreventa"
+             x:Class="SistemaPreventa.ClienteDetallePage"
+             Title="Detalles del Cliente">
+    <ContentPage.Resources>
+        <local:MultipleValuesToBooleanConverter x:Key="MultipleValuesToBooleanConverter" />
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="20">
+                <Label Text="Nombre o Razón Social *" FontSize="18" FontAttributes="Bold" />
+                <Entry x:Name="nombreEntry" />
+
+                <Label Text="Domicilio *" FontSize="18" FontAttributes="Bold"  />
+                <Entry x:Name="domicilioEntry" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Text="Localidad *" FontSize="18" FontAttributes="Bold"  Grid.Column="0" Grid.Row="0"/>
+                    <Picker x:Name="localidadesPicker" Grid.Column="0" Grid.Row="1">
+                    <Picker.ItemDisplayBinding >
+                        <Binding Path="nombre" />
+                    </Picker.ItemDisplayBinding>
+                </Picker>
+
+                    <Label Text="I.V.A. *" FontSize="18" FontAttributes="Bold" Grid.Column="1" Grid.Row="0" />
+                    <Picker x:Name="tipoContribuyentePicker" Grid.Column="1" Grid.Row="1">
+                    <Picker.ItemDisplayBinding>
+                        <Binding Path="tipo" />
+                    </Picker.ItemDisplayBinding>
+                </Picker>
+                    <Label Text="C.U.I.T." FontSize="18" FontAttributes="Bold" Grid.Column="2" Grid.Row="0"/>
+                    <Entry x:Name="cuitEntry"  Grid.Column="2" Grid.Row="1"/>
+                </Grid>
+
+                
+
+                <Label Text="Teléfono" FontSize="18" FontAttributes="Bold" />
+                <Entry x:Name="telefonoEntry" />
+
+                <Label Text="Contacto" FontSize="18" FontAttributes="Bold" />
+                <Entry x:Name="contactoEntry" />
+
+                <Label Text="Celular" FontSize="18" FontAttributes="Bold" />
+                <Entry x:Name="celularEntry" />
+
+                <Label Text="Email" FontSize="18" FontAttributes="Bold" />
+                <Entry x:Name="emailEntry" />
+
+                <Label Text="Observaciones" FontSize="18" FontAttributes="Bold" />
+                <Editor x:Name="observacionesEditor" />
+
+                <Label Text="Lista de Precios *" FontSize="18" FontAttributes="Bold" />
+                <Picker x:Name="listaPreciosPicker">
+                    <Picker.ItemDisplayBinding>
+                        <Binding Path="nombre" />
+                    </Picker.ItemDisplayBinding>
+                </Picker>
+                <BoxView Color="Black"  HeightRequest="1" HorizontalOptions="FillAndExpand" />
+                <Label Text="* Datos obligatorios" Margin="10" Padding="10"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+
+                    </Grid.ColumnDefinitions>
+                    <Button Text="Guardar" x:Name="Guardar" Clicked="Guardar_Clicked"  
+                            HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Grid.Column="1">
+                        <Button.IsEnabled>
+                            <MultiBinding Converter="{StaticResource MultipleValuesToBooleanConverter}">
+                                <Binding Source="{x:Reference nombreEntry}" Path="Text"/>
+                                <Binding Source="{x:Reference domicilioEntry}" Path="Text"/>
+                                <Binding Source="{x:Reference localidadesPicker}" Path="SelectedItem"/>
+                                <Binding Source="{x:Reference tipoContribuyentePicker}" Path="SelectedItem"/>
+                            </MultiBinding>
+                        </Button.IsEnabled>
+                    </Button>
+
+                    <Button Text="Cancelar" x:Name="Cancelar" Clicked="Cancelar_Clicked"  HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Grid.Column="0" />
+                </Grid>
+
+                
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+
+</ContentPage>

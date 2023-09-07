@@ -1,0 +1,40 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SistemaPreventa"
+             x:Class="SistemaPreventa.LoginPage"
+             Title="Login Page">
+    
+    <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+        <Image Source="logo.png" WidthRequest="150" HeightRequest="150" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Margin="10"/>
+        <Label Text="Inciar sesion" FontSize="24" HorizontalOptions="Center" Margin="0,30,0,10"/>
+        
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0,10">
+            <Label Text="Usuario:"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0,10">
+            <Entry x:Name="txtUsername" WidthRequest="200"/>
+        </StackLayout>
+
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0,10">
+            <Label Text="Contraseña:"/>
+        </StackLayout>
+
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0,10">
+            <Entry x:Name="txtPassword" WidthRequest="200" IsPassword="True"/>
+        </StackLayout>
+        <Button Text="Login" WidthRequest="100" HorizontalOptions="Center" Margin="0,10" Clicked="LoginButton_Click"/>
+
+        <Label x:Name="lblErrorMessage" Text="" TextColor="Red" HorizontalOptions="Center" Margin="0,10"/>
+
+        <Label Text="Olvidaste tu contraseña? click aqui para recuperarla" HorizontalOptions="Center" Margin="0,10" TextColor="Blue" FontSize="14">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="ForgotPassword_Tapped"/>
+            </Label.GestureRecognizers>
+        </Label>
+
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+            <ActivityIndicator x:Name="activityIndicator" IsRunning="False" Color="Blue" />
+        </StackLayout>
+    </StackLayout>
+    
+</ContentPage>

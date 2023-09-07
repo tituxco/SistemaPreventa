@@ -1,0 +1,73 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:SistemaPreventa"
+             mc:Ignorable="d"
+             x:Class="SistemaPreventa.ClientesPage"
+             Title="Listado de clientes">
+
+    <ContentPage.Content>
+        <ScrollView>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Entry x:Name="clienteBuscar"
+                       Placeholder="Buscar por Nombre o ingrese '%' para buscar todos"
+                       Completed="clienteBuscar_Completed" Grid.Row="0" ClearButtonVisibility="WhileEditing"
+                       Grid.Column="0">
+                </Entry>
+                <Button Text="Agregar" x:Name="btnClienteAgregar" BackgroundColor="Orange" Clicked="btnClienteAgregar_Clicked" Grid.Column="1"/>
+                <ActivityIndicator x:Name="activityIndicator" IsRunning="False" Color="Blue" />
+                <ListView x:Name="clientesListView"
+                          ItemsSource="{Binding Clientes}"                      
+                          ItemTapped="clientesListView_ItemTapped"
+                          SeparatorVisibility="Default" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                          HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Label Text="{Binding nomapell_razon}" FontSize="18" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
+
+                                        <Label Text="Domicilio: " Padding="5" FontSize="14" FontAttributes="Bold" Grid.Column="0" Grid.Row="1"/>
+                                        <Label Text="{Binding dir_domicilio}" Padding="5" FontSize="14" Grid.Column="1" Grid.Row="1" />
+
+                                        <Label Text="Localidad: " Padding="5" FontSize="14" FontAttributes="Bold" Grid.Column="0" Grid.Row="2"/>
+                                        <Label Text="{Binding localidadTexto}" Padding="5" FontSize="14" Grid.Column="1" Grid.Row="2" />
+
+                                        <Label Text="Telefono: " Padding="5" FontSize="14" FontAttributes="Bold" Grid.Column="0" Grid.Row="3"/>
+                                        <Label Text="{Binding telefono}" Padding="5" FontSize="14" Grid.Column="1" Grid.Row="3"/>
+
+                                        <Label Text="Celular: " Padding="5" FontSize="14"  FontAttributes="Bold" Grid.Column="0" Grid.Row="4"/>
+                                        <Label Text="{Binding celular}" Padding="5" FontSize="14" Grid.Column="1" Grid.Row="4"/>
+
+                                    </Grid>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+
+</ContentPage>

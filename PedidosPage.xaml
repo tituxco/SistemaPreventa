@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SistemaPreventa.PedidosPage"
+             Title="Pedidos del vendedor">
+    
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                <Entry Grid.Row="0" x:Name="txtBuscarPedido" Completed="btnBuscarPedido_Completed" Placeholder="Buscar pedido cliente" ClearButtonVisibility="WhileEditing"/>
+                <ActivityIndicator Grid.Row="0" x:Name="activityIndicator" IsRunning="False" Color="Blue" />
+
+                <Picker Title="Seleccione el estado de pedido" SelectedIndexChanged="Picker_SelectedIndexChanged" Grid.Row="1">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Pedidos sincronizados</x:String>
+                            <x:String>Pedidos sin sincronizar</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+                <Label x:Name="lblClienteenCurso" FontSize="18" FontAttributes="Bold" BackgroundColor="Orange" TextColor="White" Grid.Row="2" HorizontalOptions="CenterAndExpand">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer x:Name="tpClienteenCurso" Tapped="tpClienteenCurso_Tapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <StackLayout Grid.Row="3">
+                    <Label Text="Listado de pedidos locales" FontSize="20" HorizontalOptions="Center" Margin="0,10,0,20"/>
+                    <ListView x:Name="pedidosLocalesListView"
+                          ItemsSource="{Binding Pedidos}"
+                          HasUnevenRows="True" SeparatorVisibility="Default"
+                              ItemTapped="pedidosLocalesListView_ItemTapped">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50*"/>
+                                            <ColumnDefinition Width="25*"/>
+                                            <ColumnDefinition Width="25*"/>
+                                        </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                        <StackLayout Padding="10" Grid.Column="0" Grid.Row="0">
+                                            <Label Text="{Binding razon}" FontSize="18" FontAttributes="Bold"/>
+                                            <Label Text="{Binding fecha, StringFormat='{0:d}'}" FontSize="14"/>
+                                            <Label Text="{Binding direccion}" FontSize="14"/>
+                                                <Label Text="{Binding localidad}" FontSize="14"/>
+                                        </StackLayout>
+                                        <Label Text="{Binding observaciones}" Grid.Row="0" Grid.Column="2" Padding="5" VerticalOptions="Center"  TextTransform="Uppercase" FontAttributes="Bold"/>
+                                        <Label Text="{Binding observaciones2}" Grid.Row="0" Grid.Column="1" Padding="5" VerticalOptions="Center"/>
+                                            <Label Grid.Row="1" Grid.ColumnSpan="3" TextColor="White" BackgroundColor="Orange" FontAttributes="Bold" FontSize="14">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Importe total: $"/>
+                                                        <Span Text="{Binding total}"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </Grid>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+                </Grid>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                    <Button Text="Anterior"
+                            Clicked="AnteriorButton_Clicked"
+                            IsEnabled="{Binding pedidosPaginados.HasPreviousPage}" />
+                    <Label x:Name="numPagina" VerticalOptions="Center" Margin="5" FontAttributes="Bold"/>
+                    <Button Text="Siguiente"
+                            Clicked="SiguienteButton_Clicked"
+                            IsEnabled="{Binding pedidosPaginados.HasNextPage}" />
+                </StackLayout>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
