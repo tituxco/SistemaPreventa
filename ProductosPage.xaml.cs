@@ -18,6 +18,9 @@ public partial class ProductosPage : ContentPage
         }
 
         pckCategoriasInsumos.ItemsSource = DatosComunes.categoriaInsumos;
+
+
+
 	}
     private async void CargarProductosAsync()
     {
