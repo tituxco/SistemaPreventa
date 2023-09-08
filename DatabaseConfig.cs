@@ -16,6 +16,8 @@ using System.Text;
 
 namespace SistemaPreventa
 {
+
+
     public static class DatabaseConfig
     {
 
