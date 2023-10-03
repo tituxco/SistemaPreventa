@@ -21,7 +21,7 @@ namespace SistemaPreventa
     public static class DatabaseConfig
     {
 
-        private static string _connectionStringAutorizacion = "Server=66.97.35.86;Port=3306;Database=AuthServ;Uid=kiremoto;Pwd=mecago;SslMode=None;";
+        private static string _connectionStringAutorizacion = datosMysql.ConnectionStringSettings;
         private static string _connectionStringCliente;
         
         private static MySqlConnection _databaseCliente;
