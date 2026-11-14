@@ -207,7 +207,7 @@ namespace SistemaPreventa
     {
         public int id { get; set; }
         public string nombre { get; set; }
-        public int sincro { get; set; }
+        public string sincro { get; set; }
     }
 
     public class fact_cheques
@@ -362,6 +362,7 @@ namespace SistemaPreventa
         public decimal impuestoFijo01 { get; set; }
         public decimal impuestoFijo02 { get; set; }
         public decimal precioVenta { get; set; }
+        public decimal stock_calculado { get; set; }
     }
     public class fact_facturas
     {

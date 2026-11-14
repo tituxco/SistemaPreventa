@@ -6,11 +6,13 @@ namespace SistemaPreventa
 {
     public partial class LoginPage : ContentPage
     {
+        controlarEncriptacion controlarEncriptacion = new controlarEncriptacion();
        // private readonly INavigation _navigation;
         public LoginPage()
         {
             InitializeComponent();
             DatabaseConfig.CheckDatabaseConnectionAutorizacion();
+            
             //_navigation = navigation;
         }
 
@@ -26,6 +28,7 @@ namespace SistemaPreventa
 
                 // Ejemplo básico de verificación (reemplaza con tu propia lógica):
                 //if (DatabaseConfig.ComprobarUsuarioValido(username, password))
+                
                 if (await DatabaseConfig.ComprobarUsuarioAutorizado(username, password))
                 {
                     // Autenticación exitosa, redirigir al siguiente formulario o página
@@ -37,10 +40,7 @@ namespace SistemaPreventa
                     DatosComunes.localidades=await DatabaseConfig.ObtenerLocalidades();
                     DatosComunes.tiposContribuyentes=await DatabaseConfig.ObtenerTiposContibuyente();
                     DatosComunes.listasPrecios = await DatabaseConfig.ObtenerListasPrecio();
-                    DatosComunes.categoriaInsumos = await DatabaseConfig.ObtenerCategoriasInsumos();                    
-                    DatosComunes.idAlmacen = UsuarioConectado.Usuario.idAlmacen;
-                    DatosComunes.idCaja = 3;
-                    DatosComunes.ptoVta = 3;
+                    DatosComunes.categoriaInsumos = await DatabaseConfig.ObtenerCategoriasInsumos();                                           
 
                     if (UsuarioConectado.Usuario!= null && UsuarioConectado.Empresa!=null &&
                         DatosComunes.configFiscal!=null && DatosComunes.confGenerales !=null &&
@@ -49,6 +49,11 @@ namespace SistemaPreventa
                         //dejamos la seleccion del vendedor para la pagina home
                         if (UsuarioConectado.Usuario.privilegios == "VENDEDOR" || UsuarioConectado.Usuario.privilegios == "ADMINISTRADOR")
                         {
+                            DatosComunes.idAlmacen = UsuarioConectado.Usuario.idAlmacen;
+                            DatosComunes.idCaja = int.Parse(DatosComunes.confGenerales[DatosComunes.confGenerales.FindIndex(
+                                id=>id.id==78)].valor);
+                            DatosComunes.ptoVta = int.Parse(DatosComunes.confGenerales[DatosComunes.confGenerales.FindIndex(
+                                id => id.id == 78)].valor);
                             Application.Current.MainPage = new MainPage();
                         }
                         else 

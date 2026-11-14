@@ -11,8 +11,11 @@
         <ScrollView>
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" /> <!--buscador y boton de agregar-->
+                    <RowDefinition Height="Auto" /> <!--seleccionar localidad-->
+                    <RowDefinition Height="Auto" /> <!--listview-->
+                    <RowDefinition Height="Auto" /> <!--carrousel-->
+                    
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -25,10 +28,16 @@
                 </Entry>
                 <Button Text="Agregar" x:Name="btnClienteAgregar" BackgroundColor="Orange" Clicked="btnClienteAgregar_Clicked" Grid.Column="1"/>
                 <ActivityIndicator x:Name="activityIndicator" IsRunning="False" Color="Blue" />
+
+                <Picker x:Name="pckSeleccionarLocalidad" Grid.Row="1"  Title="Seleccione localidad" SelectedIndexChanged="pckSeleccionarLocalidad_SelectedIndexChanged" >
+                    <Picker.ItemDisplayBinding >
+                        <Binding Path="nombre" />
+                    </Picker.ItemDisplayBinding>
+                </Picker>
                 <ListView x:Name="clientesListView"
                           ItemsSource="{Binding Clientes}"                      
                           ItemTapped="clientesListView_ItemTapped"
-                          SeparatorVisibility="Default" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                          SeparatorVisibility="Default" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                           HasUnevenRows="True">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -66,6 +75,70 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                <!--<CarouselView x:Name="clientesCarrousel"
+                                ItemsSource="{Binding Clientes}"                                 
+                                RemainingItemsThreshold="2"
+                              Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                              Loop="False">
+                    
+                            <CarouselView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal"
+                                   ItemSpacing="10"/>
+                    </CarouselView.ItemsLayout>
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame HasShadow="True"
+                               BorderColor="Orange"
+                               CornerRadius="5"
+                               Margin="10"                               
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                                   BackgroundColor="Transparent">
+                                <SwipeView>
+                                    <SwipeView.TopItems>
+                                        <SwipeItems SwipeBehaviorOnInvoked="Close">
+                                            <SwipeItem x:Name="swpVisitaClienteRealizada"
+                                                       Text="Visitado"
+                                                       Invoked="swpVisitaClienteRealizada_Invoked"
+                                                       BackgroundColor="LightGreen"/>
+                                        </SwipeItems>
+                                    </SwipeView.TopItems>
+
+                                    <SwipeView.BottomItems>
+                                        <SwipeItems Mode="Execute">
+                                            <SwipeItem x:Name="swpPosponerVisitaCliente"
+                                                       Text="Posponer"                            
+                                                       Invoked="swpPosponerVisitaCliente_Invoked"
+                                                       BackgroundColor="LightPink"
+                                                       />
+
+                                        </SwipeItems>
+                                    </SwipeView.BottomItems>
+                                    <VerticalStackLayout Padding="10">
+
+                                        <Label Text="{Binding nomapell_razon}" FontSize="18" FontAttributes="Bold" Grid.Row="0" Grid.Column="0"/>
+
+                                        <Label Text="Domicilio: " Padding="5" FontSize="14" FontAttributes="Bold" Grid.Column="0" Grid.Row="1"/>
+                                        <Label Text="{Binding dir_domicilio}" Padding="5" FontSize="14" Grid.Column="1" Grid.Row="1" />
+
+                                        <Label Text="Localidad: " Padding="5" FontSize="14" FontAttributes="Bold" Grid.Column="0" Grid.Row="2"/>
+                                        <Label Text="{Binding localidadTexto}" Padding="5" FontSize="14" Grid.Column="1" Grid.Row="2" />
+
+                                        <Label Text="Telefono: " Padding="5" FontSize="14" FontAttributes="Bold" Grid.Column="0" Grid.Row="3"/>
+                                        <Label Text="{Binding telefono}" Padding="5" FontSize="14" Grid.Column="1" Grid.Row="3"/>
+
+                                        <Label Text="Celular: " Padding="5" FontSize="14"  FontAttributes="Bold" Grid.Column="0" Grid.Row="4"/>
+                                        <Label Text="{Binding celular}" Padding="5" FontSize="14" Grid.Column="1" Grid.Row="4"/>
+
+                                    </VerticalStackLayout>
+                                </SwipeView>
+                        
+                                
+                            </Frame>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+
+                </CarouselView>-->                                                                        
             </Grid>
         </ScrollView>
     </ContentPage.Content>

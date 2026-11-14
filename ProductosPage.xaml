@@ -35,30 +35,47 @@
                         <TapGestureRecognizer x:Name="tpClienteenCurso" Tapped="tpClienteenCurso_Tapped"/>
                     </Label.GestureRecognizers>
                 </Label>
-                <ListView x:Name="productosListView"
-                          ItemsSource="{Binding Productos}"
-                          Grid.Row="3"                      
-                          SeparatorVisibility="Default"
-                          ItemTapped="productosListView_ItemTapped" HasUnevenRows="True">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <Grid Padding="10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="auto" />
-                                    </Grid.ColumnDefinitions>
+                    <ListView x:Name="productosListView"
+          ItemsSource="{Binding Productos}"
+          Grid.Row="3"                      
+          SeparatorVisibility="Default"
+          ItemTapped="productosListView_ItemTapped" 
+          HasUnevenRows="True">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Grid Padding="10">
+                                        <!-- 1. Agregamos las definiciones de fila -->
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                                    <Label Text="{Binding codigo}" FontSize="14" Padding="5" Grid.Column="0" FontAttributes="Bold"/>
-                                    <Label Text="{Binding descripcion}" FontSize="14" Padding="5" Grid.Column="1" />
-                                    <Label Text="{Binding precioVenta, StringFormat='{}{0:C}'}" Padding="5" FontSize="14" Grid.Column="2" TextColor="Red"/>
-                                </Grid>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Fila 0: Datos del producto -->
+                                        <Label Text="{Binding codigo}" FontSize="14" Padding="5" Grid.Row="0" Grid.Column="0" FontAttributes="Bold"/>
+                                        <Label Text="{Binding descripcion}" FontSize="14" Padding="5" Grid.Row="0" Grid.Column="1" />
+                                        <Label Text="{Binding precioVenta, StringFormat='{}{0:C}'}" Padding="5" FontSize="14" Grid.Row="0" Grid.Column="2" TextColor="Red"/>
+
+                                        <!-- Fila 1: Stock disponible (Abarca 3 columnas) -->
+                                        <Label Text="{Binding stock_calculado, StringFormat='Stock disponible: {0}'}"
+                                       Grid.Row="1" 
+                                       Grid.Column="0" 
+                                       Grid.ColumnSpan="3" 
+                                       FontSize="12" 
+                                       Padding="5, 0, 5, 5" 
+                                       TextColor="Gray" />      
+                                    </Grid>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
         </StackLayout>
         </ScrollView>
     </ContentPage.Content>

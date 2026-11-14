@@ -13,12 +13,14 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
                 <Entry Grid.Row="0" x:Name="txtBuscarPedido" Completed="btnBuscarPedido_Completed" Placeholder="Buscar pedido cliente" ClearButtonVisibility="WhileEditing"/>
+                    
                 <ActivityIndicator Grid.Row="0" x:Name="activityIndicator" IsRunning="False" Color="Blue" />
 
-                <Picker Title="Seleccione el estado de pedido" SelectedIndexChanged="Picker_SelectedIndexChanged" Grid.Row="1">
+                <Picker x:Name="pckTipoPedido" Title="Seleccione el estado de pedido" SelectedIndexChanged="Picker_SelectedIndexChanged" Grid.Row="1">
                     <Picker.ItemsSource>
                         <x:Array Type="{x:Type x:String}">
                             <x:String>Pedidos sincronizados</x:String>
@@ -33,7 +35,8 @@
                 </Label>
                 <StackLayout Grid.Row="3">
                     <Label Text="Listado de pedidos locales" FontSize="20" HorizontalOptions="Center" Margin="0,10,0,20"/>
-                    <ListView x:Name="pedidosLocalesListView"
+                        <Button x:Name="btnActualizar" Text="Actualizar listado pedidos" Clicked="btnActualizar_Clicked" ></Button>
+                        <ListView x:Name="pedidosLocalesListView"
                           ItemsSource="{Binding Pedidos}"
                           HasUnevenRows="True" SeparatorVisibility="Default"
                               ItemTapped="pedidosLocalesListView_ItemTapped">

@@ -10,8 +10,8 @@ public partial class PedidosPage : ContentPage
 {
     private List<fact_Pedido> PedidosLocales;
     private IPagedList<fact_Pedido> pedidosPaginados;
-    private int elementosPorPagina = 5; // Número de elementos a mostrar por página
-    public int numeroPaginaActual; // Número de página actual
+    private int elementosPorPagina = 10; // Número de elementos a mostrar por página
+    public int numeroPaginaActual=0; // Número de página actual
     public string tipoPedido;
 
     DatabaseConfigSqlite DatabaseConfigSqlite = new DatabaseConfigSqlite(FileAccessHelper.GetLocalFilePath("sistemaPreventa.db3"));
@@ -45,34 +45,39 @@ public partial class PedidosPage : ContentPage
 
 		InitializeComponent();
 
-        if ( numeroPaginaActual==0)
-        {
-            numeroPaginaActual = 1;
+        BusquedaPedidos();
+        //if ( numeroPaginaActual==0)
+        //{
+        //    numeroPaginaActual = 1;
 
-        }        
+        //}
+        //else
+        //{
+        //    MostrarPagina(numeroPaginaActual);
+        //}     
 
-        if (PedidoenCurso.clienteSeleccionado is not null)
-        {
-            lblClienteenCurso.Text = "Pedido en curso: " + PedidoenCurso.clienteSeleccionado.nomapell_razon;
-        }
+        //if (PedidoenCurso.clienteSeleccionado is not null)
+        //{
+        //    lblClienteenCurso.Text = "Pedido en curso: " + PedidoenCurso.clienteSeleccionado.nomapell_razon;
+        //}
 
-        if(tipoPedido== "Pedidos sincronizados")
-        {
-            PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocales().Where(pedidos => !pedidos.observaciones.Contains("LOCAL")).ToList();            
-            MostrarPagina(numeroPaginaActual);
+        //if(tipoPedido== "Pedidos sincronizados")
+        //{
+        //    PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocales().Where(pedidos => !pedidos.observaciones.Contains("LOCAL")).ToList();            
+        //    MostrarPagina(numeroPaginaActual);
 
-        }
-        else if (tipoPedido == "Pedidos sin sincronizar")
-        {
-            PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocales().Where(pedidos => pedidos.observaciones.Contains("LOCAL")).ToList();            
-            MostrarPagina(numeroPaginaActual);
-        }
-        else
-        {
-            PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocales();
-        }
+        //}
+        //else if (tipoPedido == "Pedidos sin sincronizar")
+        //{
+        //    PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocales().Where(pedidos => pedidos.observaciones.Contains("LOCAL")).ToList();            
+        //    MostrarPagina(numeroPaginaActual);
+        //}
+        //else
+        //{
+        //    PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocales();
+        //}
 
-        //PedidosLocales= DatabaseConfigSqlite.ObtenerPedidosLocales();
+        ////PedidosLocales= DatabaseConfigSqlite.ObtenerPedidosLocales();
 
         MostrarPagina(numeroPaginaActual);
         //pedidosLocalesListView.ItemsSource = PedidosLocales;
@@ -126,29 +131,40 @@ public partial class PedidosPage : ContentPage
 
     private void BusquedaPedidos()
     {
-        if (txtBuscarPedido.Text != "")
+        try
         {
-            PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocalesBuscar(txtBuscarPedido.Text);
-            //pedidosLocalesListView.ItemsSource = PedidosLocales;
-            numeroPaginaActual = 1;
-            MostrarPagina(numeroPaginaActual);
-        }
-        else
-        {
-            if (tipoPedido == "Pedidos sin sincronizar")
+            tipoPedido = (string) pckTipoPedido.SelectedItem;
+            //DisplayAlert("alerta",tipoPedido,"ok");
+            activityIndicator.IsRunning=true;
+            if ( txtBuscarPedido.Text != "")
             {
-                PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocales().Where(pedidos => pedidos.observaciones.Contains("LOCAL")).ToList();
-                //numeroPaginaActual = 1;                
+                //DisplayAlert("buscando por tipeo",tipoPedido + "--"+ txtBuscarPedido.Text,"ok");
+                PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocalesBuscar(txtBuscarPedido.Text);
+                //pedidosLocalesListView.ItemsSource = PedidosLocales;
+                numeroPaginaActual = 1;
                 MostrarPagina(numeroPaginaActual);
             }
-            else if (tipoPedido == "Pedidos sincronizados")
+            else
             {
-                PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocales().Where(pedidos => !pedidos.observaciones.Contains("LOCAL")).ToList();
-                //numeroPaginaActual = 1;
-                MostrarPagina(numeroPaginaActual);
-            }               
-            
+                if (tipoPedido == "Pedidos sin sincronizar")
+                {
+                    PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocales().Where(pedidos => pedidos.observaciones.Contains("LOCAL")).ToList();
+                    //numeroPaginaActual = 1;                
+                    MostrarPagina(numeroPaginaActual);
+                }
+                else if (tipoPedido == "Pedidos sincronizados")
+                {
+                    PedidosLocales = DatabaseConfigSqlite.ObtenerPedidosLocales().Where(pedidos => !pedidos.observaciones.Contains("LOCAL")).ToList();
+                    //numeroPaginaActual = 1;
+                    MostrarPagina(numeroPaginaActual);
+                }
+
+            }
+        }catch (Exception ex)
+        {
+            DisplayAlert("error", ex.Message, "OK");
         }
+        finally { activityIndicator.IsRunning = false; }
     }
 
     private async void pedidosLocalesListView_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -160,17 +176,27 @@ public partial class PedidosPage : ContentPage
 
             if (respuesta)
             {
-                if (e.Item is fact_Pedido)
+                activityIndicator.IsRunning = true;
+                try
                 {
-                    fact_Pedido pedidoSeleccionado = e.Item as fact_Pedido;
-                    List<fact_itemsPedido> itemsPedidos = DatabaseConfigSqlite.ObtenerItemsPedidoLocal(pedidoSeleccionado.id);
-                    if (await DatabaseConfig.SincronizarPedidoIndividual(pedidoSeleccionado, itemsPedidos, DatosComunes.ptoVta, 995, DatosComunes.idAlmacen, DatosComunes.idCaja))
+                    if (e.Item is fact_Pedido)
                     {
-                        await Toast.Make("El pedido se a enviado correctamente", ToastDuration.Short).Show();
-                        BusquedaPedidos();
-                        MostrarPagina(numeroPaginaActual);
+                        fact_Pedido pedidoSeleccionado = e.Item as fact_Pedido;
+                        List<fact_itemsPedido> itemsPedidos = DatabaseConfigSqlite.ObtenerItemsPedidoLocal(pedidoSeleccionado.id);
+                        if (await DatabaseConfig.SincronizarPedidoIndividual(pedidoSeleccionado, itemsPedidos, DatosComunes.ptoVta, 995, DatosComunes.idAlmacen, DatosComunes.idCaja))
+                        {
+                            await Toast.Make("El pedido se a enviado correctamente", ToastDuration.Short).Show();
+
+                            PedidosLocales.Remove(pedidoSeleccionado);                            
+                            //BusquedaPedidos();
+                            MostrarPagina(numeroPaginaActual);
+                        }
                     }
+                }catch (Exception  ex)
+                {
+                    await DisplayAlert("error",ex.Message,"OK");
                 }
+                finally { activityIndicator.IsRunning = false; }
             }
         }
         else if (action == "Editar Pedido")
@@ -199,7 +225,8 @@ public partial class PedidosPage : ContentPage
                     if (DatabaseConfigSqlite.EliminarPedidoLocal(pedidoSeleccionado))
                     {
                         await Toast.Make("El pedido se a eliminado correctamente", ToastDuration.Short).Show();
-                        BusquedaPedidos();
+                        PedidosLocales.Remove(pedidoSeleccionado);
+                        //BusquedaPedidos();
                         MostrarPagina(numeroPaginaActual);
                     }
                 }
@@ -210,5 +237,10 @@ public partial class PedidosPage : ContentPage
             //await DisplayAlert("Mensaje", "No se detecto una acción válida", "Ok");
         }
 
+    }
+
+    private void btnActualizar_Clicked(object sender, EventArgs e)
+    {
+        BusquedaPedidos();
     }
 }

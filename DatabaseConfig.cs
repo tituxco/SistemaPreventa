@@ -16,19 +16,14 @@ using System.Text;
 
 namespace SistemaPreventa
 {
-
-
     public static class DatabaseConfig
     {
-
         private static string _connectionStringAutorizacion = datosMysql.ConnectionStringSettings;
-        private static string _connectionStringCliente;
-        
+        private static string _connectionStringCliente;        
         private static MySqlConnection _databaseCliente;
         private static MySqlConnection _databaseAsyncCliente;
         private static MySqlConnection _databaseAsyncAutorizacion;
         private static MySqlConnectionStringBuilder MySqlConnectionStringBuilderCliente = new MySqlConnectionStringBuilder(_connectionStringCliente);
-
         private static DatabaseConfigSqlite databaseConfigSqlite = new DatabaseConfigSqlite(FileAccessHelper.GetLocalFilePath("sistemaPreventa.db3"));
 
         public static bool CheckDatabaseConnectionAutorizacion()
@@ -106,7 +101,6 @@ namespace SistemaPreventa
                     {
                         using (MySqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-
                             if (await reader.ReadAsync())
                             {
                                 AuthServ.UsuarioAutorizado.autorizado = reader.GetInt32("autorizado");
@@ -150,6 +144,10 @@ namespace SistemaPreventa
         }
         public static string GetMd5Hash(string input)
         {
+            //using SHA256 md5 = SHA256.Create(); ///debemos usar este hay que implementarlo gradualmente y con cambio de contraseña
+
+
+
             using (MD5 md5Hash = MD5.Create())
             {
                 byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
@@ -173,6 +171,7 @@ namespace SistemaPreventa
                 {
                     using (MySqlCommand command = new MySqlCommand("SELECT * FROM cm_usuarios WHERE usuario like '" + username + "' and activo=1", _databaseAsyncCliente))
                     {
+                        Console.WriteLine(command.CommandText);
                         using (MySqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (await reader.ReadAsync())
@@ -191,11 +190,13 @@ namespace SistemaPreventa
 
                             }
                         }
+                        Console.WriteLine("USUARIO OBTENIDO" );
                         return usuario;
                     }
                 }
                 else
                 {
+                    Console.WriteLine("error al obtener datos de usuario");
                     return null;
                 }
             }
@@ -229,6 +230,7 @@ namespace SistemaPreventa
                                     comision = Convert.ToDecimal(reader["comision"]),
                                     listaPrecios = reader.GetInt32("listaPrecios"),
                                 };
+                                Console.WriteLine("vendedores obtenidos");
                                 vendedores.Add(vendedor);
                             }
                         }
@@ -283,6 +285,7 @@ namespace SistemaPreventa
                             }
                         }
                     }
+                    Console.WriteLine("EMPRESA OBTENIDA " );
                     return empresa;
                 }
                 else
@@ -311,7 +314,7 @@ namespace SistemaPreventa
                 List<fact_clientes> clientes = new List<fact_clientes>();
                 if (_databaseAsyncCliente.State == System.Data.ConnectionState.Open)
                 {
-                    using (MySqlCommand command = new MySqlCommand("SELECT * FROM fact_clientes where nomapell_razon like '%" + buscar.Replace(" ", "%") + "' limit 0,50", _databaseAsyncCliente))
+                    using (MySqlCommand command = new MySqlCommand("SELECT * FROM fact_clientes where nomapell_razon like '%" + buscar.Replace(" ", "%") + "' order by nomapell_razon asc limit 0,50", _databaseAsyncCliente))
                     {
                         using (MySqlDataReader reader = await command.ExecuteReaderAsync())
                         {
@@ -375,7 +378,7 @@ namespace SistemaPreventa
             }
 
         }
-        public static async Task<List<fact_clientes>> CargarClientesVendedor(int idVendedor, string buscar)
+        public static async Task<List<fact_clientes>> CargarClientesVendedor(string loca,int idVendedor, string buscar)
         {
             try
             {
@@ -383,7 +386,8 @@ namespace SistemaPreventa
                 List<fact_clientes> clientes = new List<fact_clientes>();
                 if (_databaseAsyncCliente.State == System.Data.ConnectionState.Open)
                 {
-                    using (MySqlCommand command = new MySqlCommand("SELECT * FROM fact_clientes where vendedor=" + idVendedor + " and nomapell_razon like '%" + buscar.Replace(" ", "%") + "%' limit 0,50", _databaseAsyncCliente))
+                    using (MySqlCommand command = new MySqlCommand("SELECT * FROM fact_clientes where vendedor=" + idVendedor + " and nomapell_razon like '%" + buscar.Replace(" ", "%") + "%' " +
+                        " and dir_localidad like '" + loca + "' limit 0,50", _databaseAsyncCliente))
                     {
                         using (MySqlDataReader reader = await command.ExecuteReaderAsync())
                         {
@@ -572,13 +576,19 @@ namespace SistemaPreventa
         {
             try
             {
+                var almacenPreventa = DatosComunes.confGenerales.FirstOrDefault(c => c.id == 80); //obtenemos el almacen asiganado a los preventistas en configuraciones
                 await _databaseAsyncCliente.OpenAsync();
                 List<fact_insumos> productos = new List<fact_insumos>();
                 if (_databaseAsyncCliente.State == System.Data.ConnectionState.Open)
                 {
-                    using (MySqlCommand command = new MySqlCommand("SELECT * FROM fact_insumos where eliminado=0 and (descripcion like '%" + buscar + "%' or codigo like '%" + buscar + "%') and categoria like '" + idcategoria + "' limit 0,50", _databaseAsyncCliente))
+                    using (MySqlCommand command = new MySqlCommand("SELECT pro.*, " +
+                           "IFNULL((SELECT SUM(REPLACE(stock,',','.')) FROM fact_insumos_lotes WHERE idproducto=pro.id  AND idalmacen=" + almacenPreventa.valor  +"), 0) AS stock_calculado " +
+                           "FROM fact_insumos pro " +
+                           "WHERE pro.eliminado=0 AND (pro.descripcion LIKE '%" + buscar + "%' OR pro.codigo LIKE '%" + buscar + "%') " +
+                           "AND pro.categoria IN (" + idcategoria + ") " +
+                           "ORDER BY pro.descripcion ASC LIMIT 0,50", _databaseAsyncCliente))
                     {
-                        //Debug.WriteLine(command.CommandText);
+                        Debug.WriteLine(command.CommandText);
                         using (MySqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             while (await reader.ReadAsync())
@@ -595,7 +605,7 @@ namespace SistemaPreventa
                                 producto.marca = reader.GetInt32("marca");
                                 producto.modelo = reader.GetInt32("modelo");
                                 
-                                producto.detalles = reader.GetString("detalles");
+                                producto.detalles = reader.GetString("detalles").ToString() ;
                                 producto.cod_bar = reader.GetString("cod_bar");
                                 producto.moneda = reader.GetInt32("moneda");
 
@@ -615,7 +625,8 @@ namespace SistemaPreventa
                                 producto.eliminado = reader.GetInt32("eliminado");
                                 producto.unidades = reader.GetInt32("unidades");
                                 producto.presentacion = reader.GetString("presentacion");
-                                
+                                //producto.stock_calculado = decimal.Parse(reader.GetString("stock_calculado"));
+                                producto.stock_calculado = reader["stock_calculado"] != DBNull.Value ? Convert.ToDecimal(reader["stock_calculado"]) : 0m;
                                 producto.precioVenta = FuncionesGlobales.CalcularPrecioLista(
                                   FuncionesGlobales.CompobarNulos(reader.GetString("precio")),
                                   FuncionesGlobales.CompobarNulos(reader.GetString("iva")), 
@@ -631,6 +642,7 @@ namespace SistemaPreventa
                             reader.Close();
                         }
                     }
+                    Debug.WriteLine("productos obtenidos");
                     return productos;
                 }
                 else
@@ -659,7 +671,7 @@ namespace SistemaPreventa
                 List<fact_localidad> localidades = new List<fact_localidad>();
                 if (_databaseAsyncCliente.State == System.Data.ConnectionState.Open)
                 {
-                    using MySqlCommand command = new MySqlCommand("SELECT * FROM cm_localidad ", _databaseAsyncCliente);
+                    using MySqlCommand command = new MySqlCommand("SELECT * FROM cm_localidad order by nombre asc", _databaseAsyncCliente);
                     using (MySqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
@@ -671,6 +683,7 @@ namespace SistemaPreventa
                             };
                             localidades.Add(localidad);
                         };
+                        Console.WriteLine("localidades obtenidas");
                         reader.Close();
                     }
                     //return localidades;
@@ -723,6 +736,7 @@ namespace SistemaPreventa
                                 };
                                 ConfFiscales.Add(conffiscal);
                             };
+                            Console.WriteLine("configuracion fiscal obtenida");
                             reader.Close();
                         }
                     }
@@ -767,6 +781,7 @@ namespace SistemaPreventa
                                 };
                                 ConfGenerales.Add(configuracion);
                             };
+                            Console.WriteLine("configuraciones generales obtenidas");
                             reader.Close();
                         }
                     }
@@ -886,7 +901,7 @@ namespace SistemaPreventa
 
                 if (_databaseAsyncCliente.State == System.Data.ConnectionState.Open)
                 {
-                    using (MySqlCommand command = new MySqlCommand("SELECT * FROM fact_categoria_insum order by nombre asc", _databaseAsyncCliente))
+                    using (MySqlCommand command = new MySqlCommand("SELECT * FROM fact_categoria_insum where sincro=1 order by nombre asc ", _databaseAsyncCliente))
                     {
                         using (MySqlDataReader reader = await command.ExecuteReaderAsync())
                         {
@@ -896,7 +911,7 @@ namespace SistemaPreventa
                                 {
                                     id = reader.GetInt32("id"),
                                     nombre = reader.GetString("nombre"),
-                                    sincro = reader.GetInt32("sincro"),
+                                    sincro = reader.GetString("sincro"),
                                 };
                                 CategoriasInsumos.Add(categoriaInsumo);
                             };

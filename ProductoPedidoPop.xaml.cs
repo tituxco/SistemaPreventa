@@ -22,7 +22,6 @@ public partial class ProductoPedidoPop : BasePopupPage
             txtPrecio.Text = itemSeleccionado.punit.ToString();
             txtCantidad.Text = itemSeleccionado.cantidad.ToString();
         }
-
     }
 
     private async void Cancelar_Clicked(object sender, EventArgs e)

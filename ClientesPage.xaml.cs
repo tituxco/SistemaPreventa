@@ -1,6 +1,8 @@
+using NPOI.POIFS.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Web.WebPages;
 
 
 namespace SistemaPreventa
@@ -12,28 +14,42 @@ namespace SistemaPreventa
         {
             InitializeComponent();
             //Clientes = new List<fact_clientes>();                        
-            //CargarClientesAsync();          
+            //CargarClientesAsync();
+            pckSeleccionarLocalidad.ItemsSource = DatosComunes.localidades;
         }
        
         private async Task CargarClientesAsync()
         {
             try
             {
+                
                 activityIndicator.IsRunning = true; // Mostrar la barra de estado
+                string loca = "%";
+                string busqueda = "%";
+                
+                if (!clienteBuscar.Text.IsEmpty()) { busqueda = clienteBuscar.Text; }
 
+                fact_localidad localidad = pckSeleccionarLocalidad.SelectedItem  as fact_localidad;
+                if (localidad == null) { loca = "%"; } else { loca = localidad.id.ToString(); }
+ 
+               
                 // Realizar la consulta de manera asíncrona
                 if (UsuarioConectado.Usuario.privilegios == "VENDEDOR")
                 {
-                    Clientes = await DatabaseConfig.CargarClientesVendedor(UsuarioConectado.VendedorSeleccionado.id, clienteBuscar.Text);
+                    
+                    Clientes = await DatabaseConfig.CargarClientesVendedor(loca,UsuarioConectado.VendedorSeleccionado.id, busqueda );
+                    
                 }
                 else
                 {
                     Clientes = await DatabaseConfig.CargarClientes(clienteBuscar.Text);
                 }
-                
+
 
                 // Actualizar el origen de datos del ListView
                 clientesListView.ItemsSource = Clientes;
+                
+                //clientesCarrousel.ItemsSource = Clientes;
                 
             }
             catch (Exception ex)
@@ -115,6 +131,25 @@ namespace SistemaPreventa
             {
                 activityIndicator.IsRunning = false;
             }
+        }
+
+        private async void pckSeleccionarLocalidad_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await CargarClientesAsync();             
+        }
+
+        private void swpVisitaClienteRealizada_Invoked(object sender, EventArgs e)
+        {           
+            DisplayAlert("Ok", "invocado", "OK");
+            //fact_clientes clienteSel = clientesCarrousel.CurrentItem as fact_clientes;                     
+           // if (clienteSel != null) { DisplayAlert("cliente seleccionado", clienteSel.nomapell_razon,"OK"); }
+        }
+
+        private void swpPosponerVisitaCliente_Invoked(object sender, EventArgs e)
+        {
+            var clienteItem = sender as SwipeItem;
+            if (clienteItem != null) { clienteItem.BackgroundColor = Colors.LightPink; }
+
         }
     }
 }
